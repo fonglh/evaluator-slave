@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'coursemology/evaluator'
+require 'byebug'
 
 Coursemology::Evaluator.eager_load!
 Coursemology::Evaluator::CLI.start(ARGV)

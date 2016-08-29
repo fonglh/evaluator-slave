@@ -117,6 +117,15 @@ class Coursemology::Evaluator::Services::EvaluateProgrammingPackageService
     logs = container.logs(stdout: true, stderr: true)
 
     _, stdout, stderr = Coursemology::Evaluator::Utils.parse_docker_stream(logs)
+    p "############################## stdout  ##############################"
+    puts stdout
+    p "############################## stderr  ##############################"
+    puts stderr
+    p "############################## Test Report  ##############################"
+    puts extract_test_report(container)
+    p "############################## exit code  ##############################"
+    puts container.exit_code
+    p "########################################################################"
     Result.new(stdout, stderr, extract_test_report(container), container.exit_code)
   end
 
