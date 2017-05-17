@@ -36,11 +36,17 @@ class Coursemology::Evaluator::Services::EvaluateProgrammingPackageService
   #
   # @return [Coursemology::Evaluator::Services::EvaluateProgrammingPackageService::Result]
   def execute
+    puts "Performance service execute: #{(Time.now.to_f * 1000).to_i}"
     container = create_container(@evaluation.language.class.docker_image)
+    puts "Performance service execute container created: #{(Time.now.to_f * 1000).to_i}"
     copy_package(container)
+    puts "Performance service execute package copied: #{(Time.now.to_f * 1000).to_i}"
     execute_package(container)
+    puts "Performance service execute package executed: #{(Time.now.to_f * 1000).to_i}"
 
-    extract_result(container)
+    result = extract_result(container)
+    puts "Performance service execute result extracted: #{(Time.now.to_f * 1000).to_i}"
+    result
   ensure
     destroy_container(container) if container
   end
@@ -126,6 +132,7 @@ class Coursemology::Evaluator::Services::EvaluateProgrammingPackageService
     p "############################## exit code  ##############################"
     puts container.exit_code
     p "########################################################################"
+
     Result.new(stdout, stderr, extract_test_report(container), container.exit_code)
   end
 

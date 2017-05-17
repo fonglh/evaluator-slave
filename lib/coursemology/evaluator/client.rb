@@ -22,6 +22,7 @@ class Coursemology::Evaluator::Client
 
   # Performs one iteration of the client loop.
   def client_loop
+    puts "Performance client loop: #{(Time.now.to_f * 1000).to_i}"
     evaluations = allocate_evaluations
     if evaluations && !evaluations.empty?
       on_allocate(evaluations)
@@ -57,6 +58,7 @@ class Coursemology::Evaluator::Client
   # @param [Array<Coursemology::Evaluator::Models::ProgrammingEvaluation>] evaluations The
   #   evaluations retrieved from the server.
   def on_allocate(evaluations)
+    puts "Performance allocate: #{(Time.now.to_f * 1000).to_i}"
     evaluations.each do |evaluation|
       on_evaluation(evaluation)
     end
@@ -69,12 +71,15 @@ class Coursemology::Evaluator::Client
   def on_evaluation(evaluation)
     ActiveSupport::Notifications.instrument('evaluate.client.evaluator.coursemology',
                                             evaluation: evaluation) do
+      puts "Performance on_evaluation: #{(Time.now.to_f * 1000).to_i}"
       evaluation.evaluate
     end
+    puts "Performance finished on_evaluation evaluations: #{(Time.now.to_f * 1000).to_i}"
 
     ActiveSupport::Notifications.instrument('save.client.evaluator.coursemology') do
       evaluation.save
     end
+    puts "Performance on_evaluation saved: #{(Time.now.to_f * 1000).to_i}"
   end
 
   # The callback for handling SIGTERM sent to the process.

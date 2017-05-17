@@ -34,8 +34,10 @@ class Coursemology::Evaluator::Models::ProgrammingEvaluation < Coursemology::Eva
   # @return [Coursemology::Evaluator::Models::ProgrammingEvaluation::Package]
   def package
     @package ||= begin
+      puts "Performance request package: #{(Time.now.to_f * 1000).to_i}"
       body = self.class._plain_request('courses/assessment/programming_evaluations/:id/package',
                                        :get, id: id)
+      puts "Performance got package: #{(Time.now.to_f * 1000).to_i}"
       Package.new(Coursemology::Evaluator::StringIO.new(body))
     end
   end
@@ -45,8 +47,10 @@ class Coursemology::Evaluator::Models::ProgrammingEvaluation < Coursemology::Eva
   # Call {Coursemology::Evaluator::Models::ProgrammingEvaluation#save} to save the record to the
   # server.
   def evaluate
+    puts "Performance evaluate start: #{(Time.now.to_f * 1000).to_i}"
     result = Coursemology::Evaluator::Services::EvaluateProgrammingPackageService.
              execute(self)
+    puts "Performance evaluate got result: #{(Time.now.to_f * 1000).to_i}"
     self.stdout = result.stdout
     self.stderr = result.stderr
     self.test_report = result.test_report
